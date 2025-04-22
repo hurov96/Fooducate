@@ -7,8 +7,15 @@ const STORAGE_KEY = 'calorieCalculatorIngredients';
 // Отримання елементів DOM
 const ingredientForm = document.getElementById('ingredientForm');
 const ingredientsList = document.getElementById('ingredientsList');
-const totalCaloriesElement = document.getElementById('totalCalories');
 const resetButton = document.getElementById('resetButton');
+const totalWeightElement = document.getElementById('totalWeight');
+const detailedTotalCaloriesElement = document.getElementById('detailedTotalCalories');
+const caloriesPer100gElement = document.getElementById('caloriesPer100g');
+const recommendedPortionsElement = document.getElementById('recommendedPortions');
+const recommendedPortionSizeElement = document.getElementById('recommendedPortionSize');
+const instructionsButton = document.getElementById('instructionsButton');
+const instructionsModal = document.getElementById('instructionsModal');
+const closeInstructions = document.getElementById('closeInstructions');
 
 // Завантаження даних з Local Storage при ініціалізації
 function loadFromLocalStorage() {
@@ -16,7 +23,7 @@ function loadFromLocalStorage() {
     if (savedIngredients) {
         ingredients = JSON.parse(savedIngredients);
         updateIngredientsList();
-        updateTotalCalories();
+        updateDetailedStatistics();
     }
     // Оновлюємо стан кнопки скидання після завантаження даних
     updateResetButtonState();
@@ -42,6 +49,31 @@ function updateResetButtonState() {
     }
 }
 
+// Оновлення розширеної статистики
+function updateDetailedStatistics() {
+    // Розрахунок загальної маси
+    const totalWeight = ingredients.reduce((sum, ingredient) => sum + ingredient.weight, 0);
+
+    // Розрахунок загальної калорійності
+    const totalCalories = ingredients.reduce((sum, ingredient) => sum + ingredient.totalCalories, 0);
+
+    // Розрахунок калорійності на 100г
+    const caloriesPer100g = totalWeight > 0 ? (totalCalories / totalWeight) * 100 : 0;
+
+    // Розрахунок рекомендованої кількості порцій (мінімум 1 порція)
+    const recommendedPortions = Math.max(1, Math.round(totalCalories / 500));
+
+    // Розрахунок рекомендованого розміру однієї порції
+    const recommendedPortionSize = totalWeight > 0 ? Math.round(totalWeight / recommendedPortions) : 0;
+
+    // Оновлення елементів DOM
+    totalWeightElement.textContent = `${Math.round(totalWeight)} г`;
+    detailedTotalCaloriesElement.textContent = `${Math.round(totalCalories)} ккал`;
+    caloriesPer100gElement.textContent = `${Math.round(caloriesPer100g)} ккал`;
+    recommendedPortionsElement.textContent = recommendedPortions;
+    recommendedPortionSizeElement.textContent = `${recommendedPortionSize} г`;
+}
+
 // Обробник форми
 ingredientForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -65,7 +97,7 @@ ingredientForm.addEventListener('submit', (e) => {
 
     // Оновлення інтерфейсу
     updateIngredientsList();
-    updateTotalCalories();
+    updateDetailedStatistics();
     updateResetButtonState();
 
     // Збереження даних у Local Storage
@@ -87,7 +119,7 @@ resetButton.addEventListener('click', () => {
 
         // Оновлення інтерфейсу
         updateIngredientsList();
-        updateTotalCalories();
+        updateDetailedStatistics();
         updateResetButtonState();
 
         // Видалення даних з Local Storage
@@ -129,18 +161,44 @@ function updateIngredientsList() {
 function deleteIngredient(id) {
     ingredients = ingredients.filter(ingredient => ingredient.id !== id);
     updateIngredientsList();
-    updateTotalCalories();
+    updateDetailedStatistics();
     updateResetButtonState();
 
     // Збереження даних у Local Storage після видалення
     saveToLocalStorage();
 }
 
-// Функція оновлення загальної калорійності
-function updateTotalCalories() {
-    const total = ingredients.reduce((sum, ingredient) => sum + ingredient.totalCalories, 0);
-    totalCaloriesElement.textContent = `${Math.round(total)} ккал`;
+// Функція відкриття модального вікна з інструкцією
+function openInstructionsModal() {
+    instructionsModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Запобігаємо прокрутці сторінки
 }
+
+// Функція закриття модального вікна з інструкцією
+function closeInstructionsModal() {
+    instructionsModal.classList.add('hidden');
+    document.body.style.overflow = ''; // Відновлюємо прокрутку сторінки
+}
+
+// Обробник кліку по кнопці інструкції
+instructionsButton.addEventListener('click', openInstructionsModal);
+
+// Обробник кліку по кнопці закриття
+closeInstructions.addEventListener('click', closeInstructionsModal);
+
+// Закриття модального вікна при кліку поза ним
+instructionsModal.addEventListener('click', (e) => {
+    if (e.target === instructionsModal) {
+        closeInstructionsModal();
+    }
+});
+
+// Закриття модального вікна при натисканні клавіші Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !instructionsModal.classList.contains('hidden')) {
+        closeInstructionsModal();
+    }
+});
 
 // Завантаження даних при ініціалізації сторінки
 document.addEventListener('DOMContentLoaded', loadFromLocalStorage); 

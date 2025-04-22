@@ -29,7 +29,73 @@
 
     <!-- Основний контент з відступом зверху -->
     <div class="container mx-auto px-4 py-8 max-w-3xl pt-16 mb-12 flex-grow">
-        <h1 class="text-4xl font-semibold text-gray-900 mb-8 text-center pt-12 pb-6">Калькулятор Калорій</h1>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pt-12 pb-6">
+            <h1 class="text-4xl font-semibold text-gray-900 text-center md:text-left">Калькулятор Калорій</h1>
+            <button id="instructionsButton"
+                class="mt-4 md:mt-0 bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors font-medium">
+                Інструкція
+            </button>
+        </div>
+
+        <!-- Модальне вікно з інструкцією -->
+        <div id="instructionsModal"
+            class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-semibold text-gray-900">Як користуватись калькулятором калорій</h2>
+                        <button id="closeInstructions" class="text-gray-500 hover:text-gray-700 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="prose prose-blue max-w-none">
+                        <p class="text-gray-700 mb-4">
+                            Цей вебдодаток дозволяє розрахувати загальну калорійність страви, а також калорійність на
+                            100 грамів.
+                        </p>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Щоб скористатись калькулятором:</h3>
+                        <ul class="list-disc pl-5 text-gray-700 mb-4 space-y-1">
+                            <li>Додайте інгредієнт, вказавши його назву, вагу в грамах та калорійність на 100 г.</li>
+                            <li>Повторіть це для кожного інгредієнта страви.</li>
+                            <li>У нижній частині ви побачите:</li>
+                            <li class="pl-5">загальну масу страви</li>
+                            <li class="pl-5">загальну калорійність</li>
+                            <li class="pl-5">калорійність на 100 г</li>
+                            <li class="pl-5">рекомендовану кількість порцій</li>
+                            <li class="pl-5">рекомендований розмір однієї порції</li>
+                        </ul>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Формули розрахунку:</h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-2">Загальна калорійність страви:</h4>
+                                <p class="text-gray-700">Сума калорійності всіх інгредієнтів</p>
+                                <p class="text-gray-700 font-medium mt-1">Для кожного інгредієнта: (вага × калорійність
+                                    на 100г) ÷ 100</p>
+                            </div>
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-2">Калорійність на 100г:</h4>
+                                <p class="text-gray-700 font-medium">(Загальна калорійність / Загальна маса) × 100</p>
+                            </div>
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-2">Рекомендована кількість порцій:</h4>
+                                <p class="text-gray-700 font-medium">Загальна калорійність / 500 (округлено до
+                                    найближчого цілого, мінімум 1 порція)</p>
+                                <p class="text-gray-700 mt-2 text-sm">Розрахунок зроблено з урахуванням середньої
+                                    потреби ~2000 ккал/день</p>
+                            </div>
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-2">Рекомендований розмір однієї порції:</h4>
+                                <p class="text-gray-700 font-medium">Загальна маса / Рекомендована кількість порцій</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Форма додавання інгредієнта -->
         <div class="bg-white rounded-2xl shadow-sm p-6 mb-8">
@@ -72,11 +138,39 @@
             </div>
         </div>
 
-        <!-- Загальна калорійність -->
-        <div class="bg-white rounded-2xl shadow-sm p-6">
-            <div class="text-center">
-                <h2 class="text-xl font-semibold text-gray-900">Загальна калорійність:</h2>
-                <p id="totalCalories" class="text-3xl font-bold text-blue-500 mt-2">0 ккал</p>
+        <!-- Розширена статистика -->
+        <div class="bg-gray-100 rounded-2xl shadow-sm p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6 text-center">Результат розрахунку</h2>
+            <div class="border-t border-gray-200 pt-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="bg-white rounded-xl p-4 shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Загальна маса страви</h3>
+                        <p id="totalWeight" class="text-2xl font-bold text-gray-900">0 г</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Загальна калорійність</h3>
+                        <p id="detailedTotalCalories" class="text-2xl font-bold text-gray-900">0 ккал</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Калорійність на 100г</h3>
+                        <p id="caloriesPer100g" class="text-2xl font-bold text-gray-900">0 ккал</p>
+                    </div>
+                </div>
+
+                <!-- Рекомендована кількість порцій -->
+                <div class="mt-8 bg-white rounded-xl p-6 shadow-sm">
+                    <h3 class="text-lg font-medium text-gray-900 mb-2 text-center">Рекомендована кількість порцій</h3>
+                    <p id="recommendedPortions" class="text-3xl font-bold text-blue-500 text-center mb-2">0</p>
+                    <p class="text-sm text-gray-600 text-center">Розрахунок зроблено з урахуванням середньої потреби
+                        ~2000 ккал/день</p>
+                </div>
+
+                <!-- Рекомендований розмір порції -->
+                <div class="mt-4 bg-white rounded-xl p-6 shadow-sm">
+                    <h3 class="text-lg font-medium text-gray-900 mb-2 text-center">Рекомендований розмір однієї порції
+                    </h3>
+                    <p id="recommendedPortionSize" class="text-3xl font-bold text-blue-500 text-center">0 г</p>
+                </div>
             </div>
         </div>
     </div>
