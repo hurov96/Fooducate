@@ -421,21 +421,6 @@ function saveToLocalStorage() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(ingredients));
 }
 
-// Оновлення стану кнопки скидання
-function updateResetButtonState() {
-    if (ingredients.length === 0) {
-        // Якщо список порожній, відключаємо кнопку
-        resetButton.disabled = true;
-        resetButton.classList.add('opacity-50', 'cursor-not-allowed');
-        resetButton.classList.remove('hover:bg-gray-200');
-    } else {
-        // Якщо в списку є інгредієнти, активуємо кнопку
-        resetButton.disabled = false;
-        resetButton.classList.remove('opacity-50', 'cursor-not-allowed');
-        resetButton.classList.add('hover:bg-gray-200');
-    }
-}
-
 // Оновлення розширеної статистики
 function updateDetailedStatistics() {
     // Розрахунок загальної маси
@@ -459,6 +444,32 @@ function updateDetailedStatistics() {
     caloriesPer100gElement.textContent = `${Math.round(caloriesPer100g)} ккал`;
     recommendedPortionsElement.textContent = recommendedPortions;
     recommendedPortionSizeElement.textContent = `${recommendedPortionSize} г`;
+
+    // Оновлення лічильника інгредієнтів
+    updateIngredientCounter();
+}
+
+// Оновлення лічильника інгредієнтів
+function updateIngredientCounter() {
+    const ingredientCounter = document.getElementById('ingredientCounter');
+    const count = ingredients.length;
+
+    // Просто показуємо кількість в дужках
+    ingredientCounter.textContent = `(${count})`;
+
+    // Оновлення стану кнопки скидання
+    updateResetButtonState();
+}
+
+// Оновлення стану кнопки скидання
+function updateResetButtonState() {
+    if (ingredients.length === 0) {
+        // Якщо список порожній, приховуємо кнопку
+        resetButton.classList.add('hidden');
+    } else {
+        // Якщо в списку є інгредієнти, показуємо кнопку
+        resetButton.classList.remove('hidden');
+    }
 }
 
 // Обробник перемикання вкладок
@@ -576,6 +587,9 @@ function updateIngredientsList() {
 
         ingredientsList.appendChild(ingredientElement);
     });
+
+    // Оновлюємо лічильник інгредієнтів
+    updateIngredientCounter();
 }
 
 // Функція видалення інгредієнта
