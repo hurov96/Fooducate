@@ -28,8 +28,8 @@
     </div>
 
     <!-- Основний контент з відступом зверху -->
-    <div class="container mx-auto px-4 py-8 max-w-3xl pt-16 mb-12 flex-grow">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pt-12 pb-6">
+    <div class="container mx-auto px-4 pt-16 pb-8 max-w-3xl mb-12 flex-grow">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pt-4 pb-6">
             <h1 class="text-4xl font-semibold text-gray-900 text-center md:text-left">Калькулятор Калорій</h1>
             <button id="instructionsButton"
                 class="mt-4 md:mt-0 bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors font-medium">
@@ -59,7 +59,8 @@
                         </p>
                         <h3 class="text-lg font-medium text-gray-900 mb-2">Щоб скористатись калькулятором:</h3>
                         <ul class="list-disc pl-5 text-gray-700 mb-4 space-y-1">
-                            <li>Додайте інгредієнт, вказавши його назву, вагу в грамах та калорійність на 100 г.</li>
+                            <li>Додайте інгредієнт, вибравши його зі списку або вказавши власну назву, вагу в грамах та
+                                калорійність на 100 г.</li>
                             <li>Повторіть це для кожного інгредієнта страви.</li>
                             <li>У нижній частині ви побачите:</li>
                             <li class="pl-5">загальну масу страви</li>
@@ -99,32 +100,89 @@
 
         <!-- Форма додавання інгредієнта -->
         <div class="bg-white rounded-2xl shadow-sm p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Додати інгредієнт</h2>
             <form id="ingredientForm" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Назва</label>
-                        <input type="text" id="name" required
-                            class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
-                    </div>
-                    <div>
-                        <label for="weight" class="block text-sm font-medium text-gray-700 mb-1">Вага (г)</label>
-                        <input type="number" id="weight" required min="0"
-                            class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
-                    </div>
-                    <div>
-                        <label for="calories" class="block text-sm font-medium text-gray-700 mb-1">Ккал / 100г</label>
-                        <input type="number" id="calories" required min="0"
-                            class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                <!-- Вкладки для вибору методу додавання інгредієнта -->
+                <div class="flex border-b border-gray-200 mb-6">
+                    <button type="button" id="customTab"
+                        class="flex-1 py-2 px-4 text-center font-medium text-sm border-b-2 border-blue-500 text-blue-600">
+                        <span class="flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
+                            </svg>
+                            Вручну
+                        </span>
+                    </button>
+                    <button type="button" id="predefinedTab"
+                        class="flex-1 py-2 px-4 text-center font-medium text-sm border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        <span class="flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                            </svg>
+                            Зі списку
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Секція для вибору зі списку -->
+                <div id="predefinedSection" class="space-y-4 hidden mt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="categorySelect"
+                                class="block text-sm font-medium text-gray-700 mb-1">Категорія</label>
+                            <select id="categorySelect"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                                <option value="">Виберіть категорію</option>
+                                <!-- Категорії будуть додані через JavaScript -->
+                            </select>
+                        </div>
+                        <div>
+                            <label for="foodSelect" class="block text-sm font-medium text-gray-700 mb-1">Продукт</label>
+                            <select id="foodSelect"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                                <option value="">Виберіть продукт</option>
+                                <!-- Продукти будуть додані через JavaScript -->
+                            </select>
+                        </div>
+                        <div>
+                            <label for="weight" class="block text-sm font-medium text-gray-700 mb-1">Вага (г)</label>
+                            <input type="number" id="weight" required min="0"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                        </div>
                     </div>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-3">
+
+                <!-- Секція для додавання вручну -->
+                <div id="customSection" class="space-y-4 mt-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Назва</label>
+                            <input type="text" id="name"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div>
+                            <label for="customWeight" class="block text-sm font-medium text-gray-700 mb-1">Вага
+                                (г)</label>
+                            <input type="number" id="customWeight" min="0"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                        <div>
+                            <label for="calories" class="block text-sm font-medium text-gray-700 mb-1">Ккал /
+                                100г</label>
+                            <input type="number" id="calories" min="0"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 mt-6">
                     <button type="submit"
                         class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors font-medium">
                         Додати інгредієнт
-                    </button>
-                    <button type="button" id="resetButton"
-                        class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors font-medium">
-                        Скинути все
                     </button>
                 </div>
             </form>
@@ -132,53 +190,68 @@
 
         <!-- Список інгредієнтів -->
         <div class="bg-white rounded-2xl shadow-sm p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Список інгредієнтів</h2>
-            <div id="ingredientsList" class="space-y-3">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-gray-900">Список інгредієнтів</h2>
+                <div class="flex items-center gap-3">
+                    <span id="ingredientCounter"
+                        class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">0
+                        інгредієнтів</span>
+                    <button type="button" id="resetButton"
+                        class="bg-gray-100 text-gray-700 py-1 px-3 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm">
+                        Скинути все
+                    </button>
+                </div>
+            </div>
+            <div id="ingredientsList" class="space-y-4">
                 <!-- Інгредієнти будуть додані через JavaScript -->
             </div>
         </div>
 
         <!-- Розширена статистика -->
         <div class="bg-gray-100 rounded-2xl shadow-sm p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-900 mb-6 text-center">Результат розрахунку</h2>
-            <div class="border-t border-gray-200 pt-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <h3 class="text-sm font-medium text-gray-700 mb-2">Загальна маса страви</h3>
-                        <p id="totalWeight" class="text-2xl font-bold text-gray-900">0 г</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <h3 class="text-sm font-medium text-gray-700 mb-2">Загальна калорійність</h3>
-                        <p id="detailedTotalCalories" class="text-2xl font-bold text-gray-900">0 ккал</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 shadow-sm">
-                        <h3 class="text-sm font-medium text-gray-700 mb-2">Калорійність на 100г</h3>
-                        <p id="caloriesPer100g" class="text-2xl font-bold text-gray-900">0 ккал</p>
-                    </div>
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">Розширена статистика</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-xl p-4 text-center">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Загальна вага</h3>
+                    <p id="totalWeight" class="text-2xl font-semibold text-gray-900">0 г</p>
                 </div>
+                <div class="bg-white rounded-xl p-4 text-center">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Загальні калорії</h3>
+                    <p id="detailedTotalCalories" class="text-2xl font-semibold text-gray-900">0 ккал</p>
+                </div>
+                <div class="bg-white rounded-xl p-4 text-center">
+                    <h3 class="text-sm font-medium text-gray-500 mb-2">Калорії на 100г</h3>
+                    <p id="caloriesPer100g" class="text-2xl font-semibold text-gray-900">0 ккал</p>
+                </div>
+            </div>
 
-                <!-- Рекомендована кількість порцій -->
-                <div class="mt-8 bg-white rounded-xl p-6 shadow-sm">
-                    <h3 class="text-lg font-medium text-gray-900 mb-2 text-center">Рекомендована кількість порцій</h3>
-                    <p id="recommendedPortions" class="text-3xl font-bold text-blue-500 text-center mb-2">0</p>
-                    <p class="text-sm text-gray-600 text-center">Розрахунок зроблено з урахуванням середньої потреби
-                        ~2000 ккал/день</p>
-                </div>
+            <!-- Рекомендована кількість порцій -->
+            <div class="mt-8 bg-white rounded-xl p-6 shadow-sm">
+                <h3 class="text-lg font-medium text-gray-900 mb-3 text-center">Рекомендована кількість порцій</h3>
+                <p id="recommendedPortions" class="text-3xl font-bold text-blue-500 text-center mb-2">0</p>
+                <p class="text-sm text-gray-600 text-center">Розрахунок зроблено з урахуванням середньої потреби ~2000
+                    ккал/день</p>
+            </div>
 
-                <!-- Рекомендований розмір порції -->
-                <div class="mt-4 bg-white rounded-xl p-6 shadow-sm">
-                    <h3 class="text-lg font-medium text-gray-900 mb-2 text-center">Рекомендований розмір однієї порції
-                    </h3>
-                    <p id="recommendedPortionSize" class="text-3xl font-bold text-blue-500 text-center">0 г</p>
-                </div>
+            <!-- Рекомендований розмір порції -->
+            <div class="mt-6 bg-white rounded-xl p-6 shadow-sm">
+                <h3 class="text-lg font-medium text-gray-900 mb-3 text-center">Рекомендований розмір однієї порції</h3>
+                <p id="recommendedPortionSize" class="text-3xl font-bold text-blue-500 text-center">0 г</p>
             </div>
         </div>
     </div>
 
     <!-- Футер -->
-    <footer class="bg-gray-100 text-gray-700 text-center py-4 w-full">
-        <p>Проєкт створено учнями <a href="https://school9-sumy.org/" target="_blank" class="hover:underline">КУ Сумська
-                спеціалізована школа №9, м. Суми</a></p>
+    <footer class="bg-gray-200 text-gray-700 py-6 w-full border-t border-gray-300">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <p class="mb-2">Проєкт створено учнями <a href="https://school9-sumy.org/" target="_blank"
+                        class="text-blue-600 hover:underline font-medium">КУ Сумська спеціалізована школа №9, м.
+                        Суми</a></p>
+                <p class="text-sm">© 2025 Калькулятор Калорій. Всі права захищені.</p>
+                <p class="text-sm mt-1">Створено: 22.04.2025</p>
+            </div>
+        </div>
     </footer>
 
     <script src="script.js"></script>
