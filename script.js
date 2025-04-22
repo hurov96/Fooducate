@@ -463,19 +463,19 @@ function updateDetailedStatistics() {
 
 // Обробник перемикання вкладок
 predefinedTab.addEventListener('click', () => {
-    predefinedTab.classList.add('text-blue-500', 'border-b-2', 'border-blue-500');
-    predefinedTab.classList.remove('text-gray-500');
-    customTab.classList.remove('text-blue-500', 'border-b-2', 'border-blue-500');
-    customTab.classList.add('text-gray-500');
+    predefinedTab.classList.add('bg-white', 'text-blue-600', 'shadow-sm', 'border', 'border-blue-200');
+    predefinedTab.classList.remove('bg-gray-50', 'text-gray-600', 'border-transparent');
+    customTab.classList.add('bg-gray-50', 'text-gray-600', 'border-transparent');
+    customTab.classList.remove('bg-white', 'text-blue-600', 'shadow-sm', 'border', 'border-blue-200');
     predefinedSection.classList.remove('hidden');
     customSection.classList.add('hidden');
 });
 
 customTab.addEventListener('click', () => {
-    customTab.classList.add('text-blue-500', 'border-b-2', 'border-blue-500');
-    customTab.classList.remove('text-gray-500');
-    predefinedTab.classList.remove('text-blue-500', 'border-b-2', 'border-blue-500');
-    predefinedTab.classList.add('text-gray-500');
+    customTab.classList.add('bg-white', 'text-blue-600', 'shadow-sm', 'border', 'border-blue-200');
+    customTab.classList.remove('bg-gray-50', 'text-gray-600', 'border-transparent');
+    predefinedTab.classList.add('bg-gray-50', 'text-gray-600', 'border-transparent');
+    predefinedTab.classList.remove('bg-white', 'text-blue-600', 'shadow-sm', 'border', 'border-blue-200');
     customSection.classList.remove('hidden');
     predefinedSection.classList.add('hidden');
 });
